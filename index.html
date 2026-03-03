@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos de Transferencia - Alexandre Fernandez</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            overflow-x: hidden;
+        }
+
+        .bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 20% 30%, rgba(30, 64, 175, 0.2) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(79, 70, 229, 0.15) 0%, transparent 40%);
+        }
+
+        .ambient-light {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: float 20s infinite alternate;
+        }
+
+        @keyframes float {
+            0% { transform: translate(-10%, -10%); }
+            100% { transform: translate(10%, 10%); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .item-row {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .item-row:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .copy-all-btn {
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .copy-all-btn:active {
+            transform: scale(0.95);
+        }
+
+        .toast {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+            transform: translate(-50%, 100px);
+            opacity: 0;
+        }
+
+        .toast.show {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6 text-slate-200">
+
+    <div class="bg-glow"></div>
+    <div class="ambient-light" style="top: -100px; left: -100px;"></div>
+    <div class="ambient-light" style="bottom: -100px; right: -100px; animation-delay: -5s;"></div>
+
+    <div class="max-w-6xl w-full text-center mb-8">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-2xl shadow-2xl mb-4 transform rotate-3">
+            <i data-lucide="wallet" class="w-8 h-8 text-white"></i>
+        </div>
+        <!-- Solicitud: Título actualizado -->
+        <h1 class="text-3xl font-extrabold text-white mb-2 tracking-tight">Datos para transferencia electrónica</h1>
+        <p class="text-slate-400">Alexandre Nicolas Fernandez Puig</p>
+    </div>
+
+    <main class="max-w-6xl w-full glass-card rounded-[2.5rem] overflow-hidden">
+        
+        <!-- Bloque de Copiar Todo -->
+        <div class="p-8 pb-4">
+            <button onclick="copyAllData()" class="w-full copy-all-btn text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-lg shadow-blue-500/20">
+                <i data-lucide="copy-plus" class="w-5 h-5"></i>
+                Copia todos los datos
+            </button>
+            <p class="text-[10px] text-slate-500 text-center mt-3 uppercase tracking-widest font-semibold">O copia los datos individualmente abajo</p>
+        </div>
+
+        <div class="px-8 pb-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <!-- Nombre -->
+            <div class="item-row p-4 rounded-xl">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Titular</label>
+                    <button onclick="copyToClipboard('name')" class="text-slate-400 hover:text-white p-2">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <span class="text-white font-medium" id="name">Alexandre Nicolas Fernandez Puig</span>
+            </div>
+
+            <!-- RUT -->
+            <div class="item-row p-4 rounded-xl">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">RUT</label>
+                    <button onclick="copyToClipboard('rut')" class="text-slate-400 hover:text-white p-2">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <span class="text-white font-medium" id="rut">17.948.119-7</span>
+            </div>
+
+            <!-- Banco -->
+            <div class="item-row p-4 rounded-xl">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Banco</label>
+                    <button onclick="copyToClipboard('bank')" class="text-slate-400 hover:text-white p-2">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <span class="text-white font-medium" id="bank">Banco Santander</span>
+            </div>
+
+            <!-- Tipo de Cuenta -->
+            <div class="item-row p-4 rounded-xl">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Tipo de Cuenta</label>
+                    <button onclick="copyToClipboard('account-type')" class="text-slate-400 hover:text-white p-2">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <span class="text-white font-medium" id="account-type">Cuenta Corriente</span>
+            </div>
+
+            <!-- Número de Cuenta -->
+            <div class="item-row p-4 rounded-xl bg-blue-500/5 border-blue-500/10">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Número de Cuenta</label>
+                    <button onclick="copyToClipboard('account-num')" class="text-blue-400 hover:text-white p-2">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <span class="text-blue-400 font-mono font-bold tracking-wider" id="account-num">000095826725</span>
+            </div>
+
+            <!-- Email -->
+            <div class="item-row p-4 rounded-xl">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Email</label>
+                    <button onclick="copyToClipboard('email')" class="text-slate-400 hover:text-white p-2">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <span class="text-white font-medium break-all text-sm" id="email">Alexandre.fernandez@outlook.com</span>
+            </div>
+        </div>
+
+        <div class="px-8 py-4 bg-white/[0.02] border-t border-white/5 text-center">
+            <p class="text-[10px] text-slate-500">Por favor, adjuntar comprobante de transferencia.</p>
+        </div>
+    </main>
+
+    <footer class="mt-8 text-slate-600 text-[10px] font-bold tracking-[0.2em] uppercase flex items-center gap-2">
+        <i data-lucide="check-check" class="w-3 h-3 text-emerald-500"></i>
+        Datos Verificados
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast fixed bottom-8 left-1/2 bg-white text-slate-900 px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 z-50">
+        <div class="bg-emerald-500 p-1 rounded-full">
+            <i data-lucide="check" class="w-3 h-3 text-white"></i>
+        </div>
+        <span class="font-bold text-xs uppercase tracking-wider" id="toast-text">Copiado</span>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            executeCopy(text, "Dato copiado");
+        }
+
+        function copyAllData() {
+            const name = document.getElementById('name').innerText;
+            const rut = document.getElementById('rut').innerText;
+            const bank = document.getElementById('bank').innerText;
+            const type = document.getElementById('account-type').innerText;
+            const num = document.getElementById('account-num').innerText;
+            const email = document.getElementById('email').innerText;
+
+            const allData = `- ${name}\n- ${rut}\n- ${bank}\n- ${type}\n- ${num}\n- ${email}`;
+            
+            executeCopy(allData, "Todos los datos copiados");
+        }
+
+        function executeCopy(text, message) {
+            const tempInput = document.createElement("textarea");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                showToast(message);
+            } catch (err) {
+                console.error('Error al copiar:', err);
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            toastText.innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
